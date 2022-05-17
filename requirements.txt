@@ -1,0 +1,6 @@
+colorama==0.4.4
+keyboard==0.13.5
+pip==21.1.2
+setuptools==57.0.0
+wheel==0.36.2
+gitignore-parser>=0.0.8
