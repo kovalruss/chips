@@ -35,3 +35,9 @@ venv
 # Cache
 .cache
 /.bash_history
+
+# Poetry
+poetry.lock
+
+# Chips
+.chipping_results

@@ -26,4 +26,3 @@ class MessagesService:
     @staticmethod
     def _colored_print(color, text):
         print(color + text + Style.RESET_ALL)
-        # print(Style.RESET_ALL)

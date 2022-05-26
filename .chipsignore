@@ -13,7 +13,6 @@ sdist
 develop-eggs
 .installed.cfg
 
-
 # Installer logs
 pip-log.txt
 
@@ -21,10 +20,7 @@ pip-log.txt
 .coverage
 .tox
 
-#Translations
-*.mo
-
-#Mr Developer
+# dev
 venv
 *.pyc
 .idea/
@@ -32,15 +28,6 @@ venv
 
 # mypy
 .mypy_cache/
-
-# Database
-db.sqlite3
-
-# Node
-node_modules/
-
-# Spoton style guide
-style-guide/
 
 # Environment files
 .env
@@ -51,19 +38,25 @@ style-guide/
 
 # BASIC CHIPS EXCLUDES
 chips
+.chipsignore
+.chipping_results
 Dockerfile*
 docker-*
 manage.py
 .git*
 pytest.ini
 tests
+__init__.py
 Pipfile
 Pipfile.lock
 requirements.txt
 pip-*
+node_modules
 Makefile
 README.md
 .pre-commit-*
 .flake8
+*.mo
+db.sqlite3
 
 # CUSTOM CHIPS EXCLUDES

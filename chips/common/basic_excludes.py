@@ -1,9 +1,9 @@
-_EXCLUDES = ['chips', 'venv', '.env']
+_EXCLUDES = ['chips', '.chipsignore', 'venv', '.env', '.chipping_results']
 DOCKER_EXCLUDES = ['Dockerfile*', 'docker-*']
 DJANGO_EXCLUDES = ['manage.py']
 GIT_EXCLUDES = ['.git*']
 TESTING_EXCLUDES = ['pytest.ini', 'tests', '.tox', '.coverage']
-PYTHON_EXCLUDES = ['*.pyc', '.mypy_cache', '*.py[co]', '*.DS_*', ]
+PYTHON_EXCLUDES = ['*.pyc', '.mypy_cache', '*.py[co]', '*.DS_*', '__init__.py']
 PACKAGES_EXCLUDES = ['*.egg', '*.egg-info', 'dist', 'build', 'eggs', 'parts', 'bin', 'var',
                      'sdist', 'develop-eggs', '.installed.cfg']
 PIP_EXCLUDES = ['Pipfile', 'Pipfile.lock', 'requirements.txt', 'pip-*']

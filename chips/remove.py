@@ -1,5 +1,5 @@
-from main_service import ChipService
-from common.messages_service import MessagesService
+from .services.main_service import ChipService
+from .common.messages_service import MessagesService
 
 
 if __name__ == "__main__":
@@ -11,10 +11,10 @@ if __name__ == "__main__":
 
         # list skipped files
         if chipped_skipped_files_list:
-            messages.default("Chipping skipped for next files: %s" % ", ".join(chipped_skipped_files_list))
+            messages.default("Removing chips skipped for next files: %s" % ", ".join(chipped_skipped_files_list))
 
         # list failed files
         if chipped_failure_files_list:
-            messages.warning("Chipping failed for next files: %s" % ", ".join(chipped_failure_files_list))
+            messages.warning("Removing chips failed for next files: %s" % ", ".join(chipped_failure_files_list))
 
-        messages.info(chipping_result)
+        messages.result(chipping_result)

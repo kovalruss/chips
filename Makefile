@@ -1,7 +1,16 @@
 BASH=bash -l -c
 
 chips_add:
-	python chips/add.py
+	python -m chips.add
 
 chips_remove:
-	python chips/remove.py
+	python -m chips.remove
+
+results:
+	python -m chips.results
+
+run_case1:
+	python -m test_.testcase1
+
+run_case2:
+	python -m test_.insio.testcase2
