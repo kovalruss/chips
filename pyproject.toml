@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "python-chips"
-version = "1.0.2"
+version = "1.0.5"
 description = "A tool that inserts \"chips\" to your code, detecting unused fragments. Might be used for developing, refactoring and manual testing purposes"
 authors = ["Ruslan Kovalchuk <russkovalchuk@gmail.com>"]
 packages = [

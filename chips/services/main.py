@@ -16,15 +16,10 @@ class ChipService:
     MODE = "local"
     LIVE = True
 
-    def __init__(self, mode: str = "local", live: bool = True, _setup: bool = True):
+    def __init__(self, live: bool = True, _setup: bool = True):
         """
-        :param mode: choose chipping mode: local, production
-        :param live: option if to autogenerate results file (might affect performance if True)
+        param live: option if to autogenerate results file (might affect performance if True)
         """
-
-        # TODO: add external mode implementation
-        if mode:
-            pass
 
         if live:
             self.LIVE = live
@@ -36,31 +31,35 @@ class ChipService:
 
     def add_chips(self,
                   path: str = None,
-                  auto: str = "off",
+                  auto: str = "on",
                   result_type: str = "list_files",
                   _silent: bool = False,
                   ) -> (str, list, list):
         """
-        Add chips to current project
+        Add chips to current project or path
 
-        :param _silent:
-        :param auto:
+        :param auto: Determines whether to auto generate .chipping_results/results.py (on/off). Default on
         :param result_type:
         list_files (default) - list all affected files,
         blind = no output,
         count_files - print number of files affected
         :param path: custom path to run, default = working directory
+        :param _silent: system parameter for muting repeating output
+
         :return:
         arg1: chipping result in str
         arg2: list of failed files
+        arg3: list of skipped files
         """
-        current_work_dir = os.getcwd() + "/" + path if path else os.getcwd()
+        self.LIVE = True if auto == "on" else False
+        
+        current_work_path = os.getcwd() + "/" + path if path else os.getcwd()
 
-        if not os.path.exists(current_work_dir):
-            return f"No files or folders matches the selected path: {current_work_dir}", [], []
+        if not os.path.exists(current_work_path):
+            return f"No files or folders matches the selected path: {current_work_path}", [], []
 
         if not _silent:
-            messages.default(f'Chipping directory == {current_work_dir}')
+            messages.default(f'Chipping path == {current_work_path}')
 
         chipped_success_files_list = []
         chipped_failure_files_list = []
@@ -73,19 +72,28 @@ class ChipService:
         work_files = []
         work_filenames = []
 
-        for root, dirs, files in os.walk(current_work_dir):
-            # TODO: add not only for .py files
-            files = [f for f in files if not matches(f) and f.endswith(".py")]
-            dirs[:] = [d for d in dirs if not matches(d)]
+        # TODO: add not only for .py files
+        # detect whether it's a directory or a particular file
+        if current_work_path.endswith('.py'):
+            work_files.append(current_work_path)
+            work_filenames.append(path)
+        else:
+            for root, dirs, files in os.walk(current_work_path):
+                files = [f for f in files if not matches(f) and f.endswith(".py")]
+                dirs[:] = [d for d in dirs if not matches(d)]
 
-            work_filenames += files
-            for filename in files:
-                work_files.append(os.path.join(root, filename))
+                work_filenames += files
+                for filename in files:
+                    work_files.append(os.path.join(root, filename))
 
         triggers_list = json.load(open(os.getcwd() + '/.chipping_results/_sys/triggered'))
 
         if not _silent:
-            messages.info(f"Chipping will be performed for files: {', '.join(work_filenames)}")
+            if work_filenames:
+                messages.info(f"Chipping will be performed for files: {', '.join(work_filenames)}")
+            else:
+                messages.warning(f"No files will be chipped on selected path. \n"
+                                 f"Check path or .chipsignore")
             if triggers_list:
                 messages.warning("Current trigger progress will be lost!")
 
@@ -100,13 +108,13 @@ class ChipService:
             if chipping_result == "another_chip_session_detected":
                 messages.info("Another chipping session detected. Removing old chips..")
                 chipping_result, _fl, _sl = \
-                    self.remove_chips(result_type="count_files", _silent=True)
+                    self.remove_chips(result_type="count_files", _silent=True, path=path)
 
                 if chipping_result:
                     messages.result(chipping_result)
 
                 chipping_result, chipped_failure_files_list, chipped_skipped_files_list = \
-                    self.add_chips(result_type="list_files", _silent=True, path=path)
+                    self.add_chips(result_type="list_files", _silent=True, path=path, auto=auto)
                 if chipping_result:
 
                     # list skipped files
@@ -155,25 +163,28 @@ class ChipService:
                      result_type: str = "list_files",
                      _silent: bool = False) -> (str, list, list):
         """
-        Remove chips from current project
+        Remove chips from current project or path
 
-        :param _silent:
+        :param _silent: system parameter for muting repeating output
         :param result_type:
         list_files (default) - list all affected files,
         blind = no output,
         count_files - print number of files affected
         :param path: custom folder path to run, default = current project
+
         :return:
         arg1: removing chips result in str
         arg2: list of failed files
+        arg3: list of skipped files
         """
-        current_work_dir = os.getcwd() + "/" + path if path else os.getcwd()
+        current_work_path = os.getcwd() + "/" + path if path else os.getcwd()
+        print("wfeewfwe = ", current_work_path)
 
-        if not os.path.exists(current_work_dir):
-            return f"No files or folders matches the selected path: {current_work_dir}", [], []
+        if not os.path.exists(current_work_path):
+            return f"No files or folders matches the selected path: {current_work_path}", [], []
 
         if not _silent:
-            messages.default(f'Chipping directory == {current_work_dir}')
+            messages.default(f'Chipping path == {current_work_path}')
 
         success_files_list = []
         failure_files_list = []
@@ -185,14 +196,20 @@ class ChipService:
         work_files = []
         work_filenames = []
 
-        for root, dirs, files in os.walk(current_work_dir):
-            # TODO: add not only for .py files
-            files = [f for f in files if not matches(f) and f.endswith(".py")]
-            dirs[:] = [d for d in dirs if not matches(d)]
+        # TODO: add not only for .py files
+        # detect whether it's a directory or a particular file
+        if current_work_path.endswith('.py'):
+            work_files.append(current_work_path)
+            work_filenames.append(path)
+        else:
+            for root, dirs, files in os.walk(current_work_path):
+                # TODO: add not only for .py files
+                files = [f for f in files if not matches(f) and f.endswith(".py")]
+                dirs[:] = [d for d in dirs if not matches(d)]
 
-            work_filenames += files
-            for filename in files:
-                work_files.append(os.path.join(root, filename))
+                work_filenames += files
+                for filename in files:
+                    work_files.append(os.path.join(root, filename))
 
         if not _silent:
             messages.info(f"Chips will be removed for files: {', '.join(work_filenames)}")
@@ -264,12 +281,12 @@ class ChipService:
                 _idx_counter += 1
                 chip_id = thread["id"]
 
-                tb.add_row([_idx_counter, file['file_path'] if first_iter else "", tab_iter*" " + thread['name'],
+                tb.add_row([_idx_counter, file['file_path'] if first_iter else "", tab_iter * " " + thread['name'],
                             "✅" if chip_id in trig_json else "❌"])
                 first_iter = False
 
                 if thread["body"]:
-                    _idx_counter = _iterate_tree(thread["body"], _idx_counter, first_iter, tab_iter+4)
+                    _idx_counter = _iterate_tree(thread["body"], _idx_counter, first_iter, tab_iter + 4)
 
             return _idx_counter
 
@@ -413,7 +430,7 @@ class ChipService:
             return "success", file_tree
 
     @classmethod
-    def _create_file_tree(cls, file_code: str, file_tree: list, file_path: str,):
+    def _create_file_tree(cls, file_code: str, file_tree: list, file_path: str, ):
         import ast
 
         ast_parsed_code = ast.parse(file_code)
@@ -495,11 +512,11 @@ class ChipService:
                             func_end_found = True
 
                             # check if func was previously chipped
-                            if "trigger(" not in lines_list[k+1]:
+                            if "trigger(" not in lines_list[k + 1]:
                                 try:
                                     nl_spaces_amount = 0
 
-                                    for t in range(k+1, k+5):
+                                    for t in range(k + 1, k + 5):
                                         # check if line contains code to count spaces
                                         if lines_list[t].strip():
                                             nl_spaces_amount = len(lines_list[t]) - len(lines_list[t].lstrip())

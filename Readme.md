@@ -47,7 +47,7 @@ There's a basic excludes list in .chipsignore. You can modify it any time you wa
 ![_chipsignore.png](README_IMGS/_chipsignore.png)
 
 ## Chipping path
-Basically Chips are performing on a root path of your project. You can specify a folder path, where you want Chips to perform. Use -p --path arg.
+Basically Chips are performing on a root path of your project. You can specify a folder or file **local path**, where you want Chips to perform (add or remove). Use -p --path arg.
 ```bash
 $chips -a -p <DESIRED PATH>
 ```
