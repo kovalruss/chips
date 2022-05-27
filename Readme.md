@@ -54,10 +54,10 @@ python -m chips --results
 ```
 
 ## Chips logging
-Choose logging type. Can be applied to remove and add.
-list_files (default for add) - list all affected files, 
-count_files (default for remove)- print number of files affected(-rt --result_type),
-blind = no output
+Choose logging type. Can be applied to remove and add (-rt --result_type)
+1) list_files (default for add) - list all affected files, 
+2) count_files (default for remove) - print number of files affected,
+3) blind - no output
 ```bash
 python -m chips -a -rt count_files
 ```
