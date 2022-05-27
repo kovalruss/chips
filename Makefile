@@ -14,3 +14,6 @@ run_case1:
 
 run_case2:
 	python -m test_.insio.testcase2
+
+run_case3:
+	python -m test_2_.testcase3

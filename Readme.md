@@ -21,7 +21,7 @@ python -m chips --add
 
 3) See the auto generated results at .chipping_results/results.py in a pretty table
 
-![img_1.png](img_1.png)
+![_pretty_table.png](README_IMGS/_pretty_table.png)
 
 4) Remove chips (-r --remove)
 ```bash
@@ -34,7 +34,7 @@ Chips generate a .chipsignore file, based on your .gitignore. Syntax is the same
 
 There's a basic excludes list in .chipsignore. You can modify it any time you want.
 
-![img.png](img.png)
+![_chipsignore.png](README_IMGS/_chipsignore.png)
 
 ## Chipping path
 Basically Chips are performing on a root path of your project. You can specify a folder path, where you want Chips to perform. Use -p --path arg.
