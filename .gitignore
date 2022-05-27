@@ -41,3 +41,7 @@ poetry.lock
 
 # Chips
 .chipping_results
+
+# Local tests
+test_
+test_2_

@@ -41,4 +41,4 @@ if __name__ == "__main__":
             args = {**args, "result_type": options.result_type}
         remove(**args)
     elif options.results:
-        results(**args)
+        results()

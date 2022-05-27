@@ -1,4 +1,4 @@
-from ..services.main_service import ChipService
+from ..services.main import ChipService
 from ..common.messages_service import MessagesService
 
 

@@ -1,12 +1,12 @@
-from ..services.main_service import ChipService
+from ..services.main import ChipService
 from ..common.messages_service import MessagesService
 
 
-def remove(path: str = None, result_type: str = "list_files"):
+def remove(path: str = None, result_type: str = "count_files"):
     service = ChipService()
     messages = MessagesService()
     chipping_result, chipped_failure_files_list, chipped_skipped_files_list = \
-        service.remove_chips(result_type="count_files")
+        service.remove_chips(result_type=result_type, path=path)
     if chipping_result:
 
         # list skipped files

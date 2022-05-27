@@ -1,4 +1,4 @@
-from ..services.main_service import ChipService
+from ..services.main import ChipService
 
 
 def results():

@@ -1,35 +1,35 @@
-from chips.services.chip import trigger
+from chips.services.chipper import trigger
 def wow():
-    trigger('00A5PE1')
+    trigger('G5IWHEU')
     cute_dog()
 
 
 def cute_dog():
-    trigger('4V28WYQ')
+    trigger('COTH37P')
     def cute_dog1(man:str):
-        trigger('L16MWVF')
+        trigger('SPPOQBJ')
         print('x')
 
         def cute_dog2(
                 dede: str,
                 zadsd: str
         ):
-            trigger('78GYANW')
+            trigger('0F6R4GL')
             print('w')
 
             def cute_dog3():
-                trigger('K149CI9')
+                trigger('GFFHPW0')
                 print('e')
 
     def cute_dog4():
-        trigger('AS1JAOX')
+        trigger('ZWA01GC')
         print('x4')
 
     print("Here's a cute dog")
 
 
 def wow2():
-    trigger('XC38NAD')
+    trigger('P72934E')
     cute_dog()
 
 if __name__ == "__main__":

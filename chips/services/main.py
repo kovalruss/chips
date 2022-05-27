@@ -38,23 +38,28 @@ class ChipService:
                   path: str = None,
                   auto: str = "off",
                   result_type: str = "list_files",
-                  silent: bool = False) -> (str, list, list):
+                  _silent: bool = False,
+                  ) -> (str, list, list):
         """
         Add chips to current project
 
+        :param _silent:
         :param auto:
-        :param silent:
         :param result_type:
         list_files (default) - list all affected files,
         blind = no output,
         count_files - print number of files affected
-        :param path: custom path to run, default = project root
+        :param path: custom path to run, default = working directory
         :return:
         arg1: chipping result in str
         arg2: list of failed files
         """
-        current_work_dir = path if path else os.getcwd()
-        if not silent:
+        current_work_dir = os.getcwd() + "/" + path if path else os.getcwd()
+
+        if not os.path.exists(current_work_dir):
+            return f"No files or folders matches the selected path: {current_work_dir}", [], []
+
+        if not _silent:
             messages.default(f'Chipping directory == {current_work_dir}')
 
         chipped_success_files_list = []
@@ -79,7 +84,7 @@ class ChipService:
 
         triggers_list = json.load(open(os.getcwd() + '/.chipping_results/_sys/triggered'))
 
-        if not silent:
+        if not _silent:
             messages.info(f"Chipping will be performed for files: {', '.join(work_filenames)}")
             if triggers_list:
                 messages.warning("Current trigger progress will be lost!")
@@ -95,13 +100,13 @@ class ChipService:
             if chipping_result == "another_chip_session_detected":
                 messages.info("Another chipping session detected. Removing old chips..")
                 chipping_result, _fl, _sl = \
-                    self.remove_chips(result_type="count_files", silent=True)
+                    self.remove_chips(result_type="count_files", _silent=True)
 
                 if chipping_result:
                     messages.result(chipping_result)
 
                 chipping_result, chipped_failure_files_list, chipped_skipped_files_list = \
-                    self.add_chips(result_type="list_files", silent=True)
+                    self.add_chips(result_type="list_files", _silent=True, path=path)
                 if chipping_result:
 
                     # list skipped files
@@ -126,7 +131,7 @@ class ChipService:
         if chipped_success_files_list:
             # create or update code_tree
             self._update_or_create_code_tree_json(file_tree)
-            ChipService(_setup=False).results(silent=True)
+            ChipService(_setup=False).results(_silent=True)
 
             # make sure triggered is cleared
             with open('.chipping_results/_sys/triggered', 'w') as triggered_json_file:
@@ -146,24 +151,28 @@ class ChipService:
 
     @classmethod
     def remove_chips(cls,
-                     folder_path: str = None,
+                     path: str = None,
                      result_type: str = "list_files",
-                     silent: bool = False) -> (str, list, list):
+                     _silent: bool = False) -> (str, list, list):
         """
         Remove chips from current project
 
-        :param silent:
+        :param _silent:
         :param result_type:
         list_files (default) - list all affected files,
         blind = no output,
         count_files - print number of files affected
-        :param folder_path: custom folder path to run, default = current project
+        :param path: custom folder path to run, default = current project
         :return:
         arg1: removing chips result in str
         arg2: list of failed files
         """
-        current_work_dir = folder_path if folder_path else os.getcwd()
-        if not silent:
+        current_work_dir = os.getcwd() + "/" + path if path else os.getcwd()
+
+        if not os.path.exists(current_work_dir):
+            return f"No files or folders matches the selected path: {current_work_dir}", [], []
+
+        if not _silent:
             messages.default(f'Chipping directory == {current_work_dir}')
 
         success_files_list = []
@@ -185,7 +194,7 @@ class ChipService:
             for filename in files:
                 work_files.append(os.path.join(root, filename))
 
-        if not silent:
+        if not _silent:
             messages.info(f"Chips will be removed for files: {', '.join(work_filenames)}")
 
             if click.confirm('Do you want to continue?', default=True):
@@ -214,14 +223,14 @@ class ChipService:
             return "Chips were removed from 0 files", failure_files_list, skipped_files_list
 
     @classmethod
-    def results(cls, silent: bool = False):
+    def results(cls, _silent: bool = False):
         """
         Generate chipping results to results.py file
 
-        :param silent: deside whether to log or not
+        :param _silent: deside whether to log or not
         """
 
-        if not silent:
+        if not _silent:
             messages.info("Generating results file..")
 
         trig_path = os.getcwd() + '/.chipping_results/_sys/triggered'
@@ -235,7 +244,7 @@ class ChipService:
             results_file.write(results_file_text)
             results_file.close()
 
-        if not silent:
+        if not _silent:
             messages.result("Results file generated in location .chipping_results/results.py")
 
     @classmethod
@@ -450,8 +459,8 @@ class ChipService:
         lines_list = chipped_file.splitlines()
         lines_iter = iter(lines_list)
 
-        if "from chips.services.chip import trigger" not in chipped_file:
-            updated_file += "from chips.services.chip import trigger\n"
+        if "from chips.services.chipper import trigger" not in chipped_file:
+            updated_file += "from chips.services.chipper import trigger\n"
 
         idx = 0
         chips_added_amount = 0
@@ -541,7 +550,7 @@ class ChipService:
             removed_chips_parts_amount = 0
             lines_list = file_text.splitlines()
             for i, line in enumerate(lines_list):
-                if "trigger(" not in line and "from chips.services.chip import trigger" not in line:
+                if "trigger(" not in line and "from chips.services.chipper import trigger" not in line:
                     changed_file += line + "\n"
                 else:
                     removed_chips_parts_amount += 1

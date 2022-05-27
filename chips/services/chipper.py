@@ -1,6 +1,6 @@
 import json
 import os
-from ..services.main_service import ChipService
+from ..services.main import ChipService
 
 
 class Chipper:
@@ -25,12 +25,12 @@ class Chipper:
 
             if live:
                 service = ChipService(_setup=False)
-                service.results(silent=True)
+                service.results(_silent=True)
 
         # generate results.py file if it doesn't exist yet
         if live and not os.path.exists('.chipping_results/results.py'):
             service = ChipService(_setup=False)
-            service.results(silent=True)
+            service.results(_silent=True)
 
 
 def trigger(chip_id: str, live: bool = True) -> Chipper():

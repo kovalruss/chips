@@ -1,1 +1,1 @@
-"""python-chips: chip your project, detect unused code"""
+"""python-chips: 👾 Chip your project, detect unused code"""
