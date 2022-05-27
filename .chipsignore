@@ -36,16 +36,23 @@ venv
 .cache
 /.bash_history
 
+# Poetry
+poetry.lock
+
+# Chips
+.chipping_results
+
+# Local tests
+test_
+test_2_
 # BASIC CHIPS EXCLUDES
 chips
 .chipsignore
-.chipping_results
 Dockerfile*
 docker-*
 manage.py
 .git*
 pytest.ini
-tests
 __init__.py
 Pipfile
 Pipfile.lock

@@ -4,18 +4,28 @@ Chips is a tool that inserts "chips" to your code, detecting unused fragments. T
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install Chips.
+**Use the package manager [pip](https://pip.pypa.io/en/stable/) to install Chips**
 
 ```bash
 pip install python-chips
 ```
+
+**Setup Chips with a command below**
+
+1) `-v --venv <on/off>` Determine whether you are using virtualenv or not. If on Chips will search for a virtualenv on a root path. Defaults to on. **Note:** if you are not using virtualenv you should run commands below with `python -m chips` instead of `$chips` 
+2) `-p --path <YOUR_VIRTUALENV_PATH>` Specify virtualenv path if venv not found
+
+```bash
+python -m chips -s
+```
+**Open a new tab in terminal or run** ``source <YOUR_VIRTUALENV_PATH>/bin/activate``
 
 ## Usage
 
 1) Add chips to your project (-a --add)
 
 ```bash
-python -m chips --add
+$chips -a
 ```
 2) Use your code (trigger functions in a way: make api requests, click website, etc..)
 
@@ -25,7 +35,7 @@ python -m chips --add
 
 4) Remove chips (-r --remove)
 ```bash
-python -m chips --remove
+$chips -r
 ```
 
 ## Ignore particular dirs and files
@@ -39,18 +49,18 @@ There's a basic excludes list in .chipsignore. You can modify it any time you wa
 ## Chipping path
 Basically Chips are performing on a root path of your project. You can specify a folder path, where you want Chips to perform. Use -p --path arg.
 ```bash
-python -m chips -a -p <DESIRED PATH>
+$chips -a -p <DESIRED PATH>
 ```
 
 ## Bad performance
 If you struggle from a bad performance after chipping, use --auto off to turn off auto generated results
 ```bash
-python -m chips -a --auto off
+$chips -a --auto off
 ```
 
 Then you'll need to generate results manually (-rs --results)
 ```bash
-python -m chips --results
+$chips -rs
 ```
 
 ## Chips logging
@@ -59,7 +69,7 @@ Choose logging type. Can be applied to remove and add (-rt --result_type)
 2) count_files (default for remove) - print number of files affected,
 3) blind - no output
 ```bash
-python -m chips -a -rt count_files
+$chips -a -rt count_files
 ```
 
 ## Contributing
