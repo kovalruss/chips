@@ -29,7 +29,8 @@ def setup(venv: str = "on", venv_path: str = ""):
                     with open("/Users/russkovalchuk/PycharmProjects/chip_test_2/venv/bin/activate", "a") as edit_file:
                         edit_file.write(_CHIPS_EXEC)
                         edit_file.close()
-                        messages.default("Added executable variable $chips to virtualenv. Start a new terminal to proceed!")
+                        messages.default("Added executable variable $chips to virtualenv. \n"
+                                         "Start a new terminal to proceed!")
 
     # PERFORM BASIC SETUP
     ChipService.setup()

@@ -43,8 +43,6 @@ poetry.lock
 .chipping_results
 
 # Local tests
-test_
-test_2_
 # BASIC CHIPS EXCLUDES
 chips
 .chipsignore

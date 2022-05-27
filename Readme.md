@@ -10,9 +10,10 @@ Chips is a tool that inserts "chips" to your code, detecting unused fragments. T
 pip install python-chips
 ```
 
-**Setup Chips with a command below**
+**Setup Chips**
 
-1) `-v --venv <on/off>` Determine whether you are using virtualenv or not. If on Chips will search for a virtualenv on a root path. Defaults to on. **Note:** if you are not using virtualenv you should run commands below with `python -m chips` instead of `$chips` 
+By default chips auto setups everything for you. If you are running into setup problems, use args below.
+1) `-v --venv <on/off>` Determine whether you are using virtualenv or not. If set to `on` Chips will search for a virtualenv on a root path. Defaults to `on`. **Note:** if you are not using virtualenv, you should run commands below with `python -m chips` instead of `$chips` 
 2) `-p --path <YOUR_VIRTUALENV_PATH>` Specify virtualenv path if venv not found
 
 ```bash

@@ -18,3 +18,4 @@ def add(path: str = None, auto: str = "on", result_type: str = "list_files"):
             messages.warning("Chipping failed for next files: %s" % ", ".join(chipped_failure_files_list))
 
         messages.result(chipping_result)
+

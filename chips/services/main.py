@@ -178,7 +178,6 @@ class ChipService:
         arg3: list of skipped files
         """
         current_work_path = os.getcwd() + "/" + path if path else os.getcwd()
-        print("wfeewfwe = ", current_work_path)
 
         if not os.path.exists(current_work_path):
             return f"No files or folders matches the selected path: {current_work_path}", [], []
@@ -279,10 +278,17 @@ class ChipService:
         def _iterate_tree(_tree_json: dict, _idx_counter: int, first_iter: bool, tab_iter: int):
             for thread in _tree_json:
                 _idx_counter += 1
-                chip_id = thread["id"]
+                if "id" in thread:
+                    chip_id = thread["id"]
 
-                tb.add_row([_idx_counter, file['file_path'] if first_iter else "", tab_iter * " " + thread['name'],
-                            "✅" if chip_id in trig_json else "❌"])
+                if thread["type"] == "def":
+                    mark = "✅" if chip_id in trig_json else "❌"
+                else:
+                    mark = ""
+
+                tb.add_row([_idx_counter, file['file_path'] if first_iter else "", tab_iter * " " + thread["type"]
+                            + " " + thread['name'],
+                            mark])
                 first_iter = False
 
                 if thread["body"]:
@@ -443,15 +449,27 @@ class ChipService:
 
             for body_item in rec_item["body"]:
                 c_tree_dict = {}
+                # FUNCTIONS
                 if body_item["_type"] == "FunctionDef":
                     if "name" in body_item:
                         defs_am += 1
                         c_tree_dict["name"] = body_item["name"]
+                        c_tree_dict["type"] = "def"
                         c_tree_dict["id"] = cls._generate_func_token()
                         # c_tree_dict["triggered"] = False
                         if "body" in body_item:
                             c_tree_dict = {**c_tree_dict, "body": []}
                             _parse_code_for_defs(body_item, defs_am, c_tree_dict["body"])
+                # CLASSES
+                if body_item["_type"] == "ClassDef":
+                    if "name" in body_item:
+                        c_tree_dict["name"] = body_item["name"]
+                        c_tree_dict["type"] = "class"
+                        # c_tree_dict["triggered"] = False
+                        if "body" in body_item:
+                            c_tree_dict = {**c_tree_dict, "body": []}
+                            _parse_code_for_defs(body_item, defs_am, c_tree_dict["body"])
+
                 if c_tree_dict:
                     c_tree.append(c_tree_dict)
 
