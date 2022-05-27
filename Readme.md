@@ -33,6 +33,7 @@ $chips -a
 3) See the auto generated results at .chipping_results/results.py in a pretty table
 
 ![_pretty_table.png](README_IMGS/_pretty_table.png)
+
 4) Remove chips (-r --remove)
 ```bash
 $chips -r
