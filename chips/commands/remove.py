@@ -1,8 +1,8 @@
-from .services.main_service import ChipService
-from .common.messages_service import MessagesService
+from ..services.main_service import ChipService
+from ..common.messages_service import MessagesService
 
 
-if __name__ == "__main__":
+def remove(path: str = None, result_type: str = "list_files"):
     service = ChipService()
     messages = MessagesService()
     chipping_result, chipped_failure_files_list, chipped_skipped_files_list = \

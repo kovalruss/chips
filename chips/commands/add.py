@@ -1,12 +1,12 @@
-from .services.main_service import ChipService
-from .common.messages_service import MessagesService
+from ..services.main_service import ChipService
+from ..common.messages_service import MessagesService
 
 
-if __name__ == "__main__":
+def add(path: str = None, auto: str = "on", result_type: str = "list_files"):
     service = ChipService()
     messages = MessagesService()
     chipping_result, chipped_failure_files_list, chipped_skipped_files_list = \
-        service.add_chips(result_type="list_files")
+        service.add_chips(result_type=result_type, path=path, auto=auto)
     if chipping_result:
 
         # list skipped files

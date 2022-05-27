@@ -35,23 +35,25 @@ class ChipService:
                 raise Exception("Chips setup failed! Read logs for more info!")
 
     def add_chips(self,
-                  folder_path: str = None,
+                  path: str = None,
+                  auto: str = "off",
                   result_type: str = "list_files",
                   silent: bool = False) -> (str, list, list):
         """
         Add chips to current project
 
+        :param auto:
         :param silent:
         :param result_type:
         list_files (default) - list all affected files,
         blind = no output,
         count_files - print number of files affected
-        :param folder_path: custom folder path to run, default = current project
+        :param path: custom path to run, default = project root
         :return:
         arg1: chipping result in str
         arg2: list of failed files
         """
-        current_work_dir = folder_path if folder_path else os.getcwd()
+        current_work_dir = path if path else os.getcwd()
         if not silent:
             messages.default(f'Chipping directory == {current_work_dir}')
 

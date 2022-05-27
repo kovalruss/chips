@@ -12,35 +12,35 @@ pip install python-chips
 
 ## Usage
 
-1) Add chips to your project
+1) Add chips to your project (-a --add)
 
 ```bash
-python -m chips.add
+python -m chips --add
 ```
 2) Use your code (trigger functions in a way: make api requests, click website, etc..)
 
 3) See the auto generated results at .chipping_results/results.py in a pretty table
 
-4) Remove chips
+4) Remove chips (-r --remove)
 ```bash
-python -m chips.remove
+python -m chips --remove
 ```
 
 ## Chipping path
 Basically Chips are performing on a root path of your project. You can specify a folder path, where you want Chips to perform. Use -p --path arg.
 ```bash
-python -m chips.add -p <DESIRED PATH>
+python -m chips -a -p <DESIRED PATH>
 ```
 
 ## Bad performance
-If you struggle from a bad performance after chipping, use -a -auto off to turn off auto generated results
+If you struggle from a bad performance after chipping, use --auto off to turn off auto generated results
 ```bash
-python -m chips.add -a off
+python -m chips -a --auto off
 ```
 
-Then you'll need to generate results manually
+Then you'll need to generate results manually (-rs --results)
 ```bash
-python -m chips.results
+python -m chips --results
 ```
 
 ## Contributing
