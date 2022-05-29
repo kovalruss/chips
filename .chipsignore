@@ -62,6 +62,7 @@ README.md
 .pre-commit-*
 .flake8
 *.mo
+migrations
 db.sqlite3
 
 # CUSTOM CHIPS EXCLUDES

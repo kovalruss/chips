@@ -1,19 +1,18 @@
 [tool.poetry]
 name = "python-chips"
-version = "1.0.6"
+version = "1.0.14"
 description = "A tool that inserts \"chips\" to your code, detecting unused fragments. Might be used for developing, refactoring and manual testing purposes"
 authors = ["Ruslan Kovalchuk <russkovalchuk@gmail.com>"]
 packages = [
     { include = "chips" },
 ]
+readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = ">=3.7"
 colorama = "^0.4.4"
-keyboard = "^0.13.5"
 gitignore-parser = "^0.0.8"
 ast2json = "^0.3"
-click = "^8.1.3"
 prettytable = "^3.3.0"
 
 [tool.poetry.extras]

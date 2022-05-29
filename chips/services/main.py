@@ -1,12 +1,13 @@
 import os
 import json
-import click
 from gitignore_parser import parse_gitignore
 
 from ..common.messages_service import MessagesService
 from chips.common.basic_excludes import BASIC_EXCLUDES
 from ast2json import ast2json
 from prettytable import PrettyTable as pt
+
+import sys
 
 messages = MessagesService()
 
@@ -32,7 +33,7 @@ class ChipService:
     def add_chips(self,
                   path: str = None,
                   auto: str = "on",
-                  result_type: str = "list_files",
+                  result_type: str = "list",
                   _silent: bool = False,
                   ) -> (str, list, list):
         """
@@ -40,9 +41,9 @@ class ChipService:
 
         :param auto: Determines whether to auto generate .chipping_results/results.py (on/off). Default on
         :param result_type:
-        list_files (default) - list all affected files,
+        list (default) - list all affected files,
         blind = no output,
-        count_files - print number of files affected
+        count - print number of files affected
         :param path: custom path to run, default = working directory
         :param _silent: system parameter for muting repeating output
 
@@ -97,7 +98,7 @@ class ChipService:
             if triggers_list:
                 messages.warning("Current trigger progress will be lost!")
 
-            if click.confirm('Do you want to continue?', default=True):
+            if self.user_yes_no_query('Do you want to continue?'):
                 pass
             else:
                 return "No files were chipped", [], []
@@ -108,13 +109,13 @@ class ChipService:
             if chipping_result == "another_chip_session_detected":
                 messages.info("Another chipping session detected. Removing old chips..")
                 chipping_result, _fl, _sl = \
-                    self.remove_chips(result_type="count_files", _silent=True, path=path)
+                    self.remove_chips(result_type="count", _silent=True, path=path)
 
                 if chipping_result:
                     messages.result(chipping_result)
 
                 chipping_result, chipped_failure_files_list, chipped_skipped_files_list = \
-                    self.add_chips(result_type="list_files", _silent=True, path=path, auto=auto)
+                    self.add_chips(result_type=result_type, _silent=True, path=path, auto=auto)
                 if chipping_result:
 
                     # list skipped files
@@ -146,10 +147,10 @@ class ChipService:
                 triggered_json_file.write("[]")
                 triggered_json_file.close()
 
-            if result_type == "list_files":
+            if result_type == "list":
                 return "Chipped %s" % ", ".join(chipped_success_files_list), chipped_failure_files_list, \
                        chipped_skipped_files_list
-            elif result_type == "count_files":
+            elif result_type == "count":
                 return "Chipped %s files" % len(chipped_success_files_list), chipped_failure_files_list, \
                        chipped_skipped_files_list
             elif result_type == "blind":
@@ -157,19 +158,32 @@ class ChipService:
         else:
             return "No files were chipped", chipped_failure_files_list, chipped_skipped_files_list
 
+    @staticmethod
+    def user_yes_no_query(question):
+        sys.stdout.write('%s [Y/n]\n' % question)
+        no_answer = True
+        while no_answer:
+            _input = input()
+            if _input == "" or _input == "y":
+                return True
+            elif _input == "n":
+                return False
+            else:
+                sys.stdout.write('Please respond with [Y/n]\n')
+
     @classmethod
     def remove_chips(cls,
                      path: str = None,
-                     result_type: str = "list_files",
+                     result_type: str = "list",
                      _silent: bool = False) -> (str, list, list):
         """
         Remove chips from current project or path
 
         :param _silent: system parameter for muting repeating output
         :param result_type:
-        list_files (default) - list all affected files,
+        list (default) - list all affected files,
         blind = no output,
-        count_files - print number of files affected
+        count - print number of files affected
         :param path: custom folder path to run, default = current project
 
         :return:
@@ -213,7 +227,7 @@ class ChipService:
         if not _silent:
             messages.info(f"Chips will be removed for files: {', '.join(work_filenames)}")
 
-            if click.confirm('Do you want to continue?', default=True):
+            if cls.user_yes_no_query('Do you want to continue?'):
                 pass
             else:
                 return "Chips were removed from 0 files", [], []
@@ -229,9 +243,9 @@ class ChipService:
 
         # write success files names to stdout
         if success_files_list:
-            if result_type == "list_files":
+            if result_type == "list":
                 return "Removed chips from %s" % ", ".join(success_files_list), failure_files_list, skipped_files_list
-            elif result_type == "count_files":
+            elif result_type == "count":
                 return "Removed chips from %s files" % len(success_files_list), failure_files_list, skipped_files_list
             elif result_type == "blind":
                 return "Chips removal completed", failure_files_list, skipped_files_list
@@ -278,10 +292,13 @@ class ChipService:
         def _iterate_tree(_tree_json: dict, _idx_counter: int, first_iter: bool, tab_iter: int):
             for thread in _tree_json:
                 _idx_counter += 1
+
+                # TODO: Check
+                chip_id = "dummy_value123"
                 if "id" in thread:
                     chip_id = thread["id"]
 
-                if thread["type"] == "def":
+                if thread["type"] == "def" and chip_id:
                     mark = "✅" if chip_id in trig_json else "❌"
                 else:
                     mark = ""
@@ -301,7 +318,7 @@ class ChipService:
 
         results_file_text += "\"\"\"\n"
         results_file_text += tb.get_string() + "\n"
-        results_file_text += "\"\"\"\n\n"
+        results_file_text += "# noqa\n\"\"\"\n\n"
 
         results_file_text += "# Don't forget to remove chips after you finish testing!\n"
 
@@ -448,30 +465,40 @@ class ChipService:
         def _parse_code_for_defs(rec_item: dict, defs_am: int, c_tree: list):
 
             for body_item in rec_item["body"]:
-                c_tree_dict = {}
-                # FUNCTIONS
-                if body_item["_type"] == "FunctionDef":
-                    if "name" in body_item:
-                        defs_am += 1
-                        c_tree_dict["name"] = body_item["name"]
-                        c_tree_dict["type"] = "def"
-                        c_tree_dict["id"] = cls._generate_func_token()
-                        # c_tree_dict["triggered"] = False
+                if body_item["_type"] == "FunctionDef" or body_item["_type"] == "ClassDef":
+                    c_tree_dict = {}
+                    # FUNCTIONS
+                    if body_item["_type"] == "FunctionDef":
+                        if "name" in body_item:
+                            defs_am += 1
+                            c_tree_dict["name"] = body_item["name"]
+                            c_tree_dict["type"] = "def"
+                            c_tree_dict["id"] = cls._generate_func_token()
+                            # c_tree_dict["triggered"] = False
+                            if "body" in body_item:
+                                c_tree_dict = {**c_tree_dict, "body": []}
+                                _parse_code_for_defs(body_item, defs_am, c_tree_dict["body"])
+                    # CLASSES
+                    if body_item["_type"] == "ClassDef":
+                        func_found = False
                         if "body" in body_item:
-                            c_tree_dict = {**c_tree_dict, "body": []}
-                            _parse_code_for_defs(body_item, defs_am, c_tree_dict["body"])
-                # CLASSES
-                if body_item["_type"] == "ClassDef":
-                    if "name" in body_item:
-                        c_tree_dict["name"] = body_item["name"]
-                        c_tree_dict["type"] = "class"
-                        # c_tree_dict["triggered"] = False
-                        if "body" in body_item:
-                            c_tree_dict = {**c_tree_dict, "body": []}
-                            _parse_code_for_defs(body_item, defs_am, c_tree_dict["body"])
+                            for item in body_item["body"]:
+                                if item["_type"] == "FunctionDef":
+                                    func_found = True
+                                    break
 
-                if c_tree_dict:
-                    c_tree.append(c_tree_dict)
+                        if func_found:
+                            if "name" in body_item:
+                                defs_am += 1
+                                c_tree_dict["name"] = body_item["name"]
+                                c_tree_dict["type"] = "class"
+                                # c_tree_dict["triggered"] = False
+
+                                c_tree_dict = {**c_tree_dict, "body": []}
+                                _parse_code_for_defs(body_item, defs_am, c_tree_dict["body"])
+
+                    if c_tree_dict:
+                        c_tree.append(c_tree_dict)
 
             return c_tree, defs_am
 
@@ -509,9 +536,9 @@ class ChipService:
         if code_tree:
             for line in lines_iter:
                 updated_file += line + "\n"
-                if "def" in line:
+                if "def " in line:
                     # GET FUNC NAME
-                    func_name = line.split("def", 1)[1].partition("(")[0].replace(':', '').strip()
+                    func_name = line.split("def ", 1)[1].partition("(")[0].replace(':', '').strip()
 
                     # ITERATE UNTIL THE ACTUAL BEGINNING OF THE FUNCTION
                     k = idx
@@ -569,16 +596,15 @@ class ChipService:
 
     @classmethod
     def _get_chip_id_by_func_name(cls, func_name: str, tree: list):
-        chip_id = None
         for thread in tree:
             if thread["name"] == func_name:
                 chip_id = thread["id"]
-                break
+                return chip_id
 
             if thread["body"]:
                 chip_id = cls._get_chip_id_by_func_name(func_name, thread["body"])
-
-        return chip_id
+                if chip_id:
+                    return chip_id
 
     @staticmethod
     def _remove_chip_from_file(file_path: str):

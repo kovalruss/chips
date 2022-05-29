@@ -25,10 +25,10 @@ if __name__ == "__main__":
                         help='Determines whether to use virtualenv or not (on/off). '
                              'Default on"',
                         type=str)
-    parser.add_argument('-rt', '--result_type', default="list_files",
-                        help='list_files - list all affected files \n'
+    parser.add_argument('-rt', '--result_type', default="list",
+                        help='list - list all affected files \n'
                              'blind = no output \n'
-                             'count_files - print number of files affected',
+                             'count - print number of files affected',
                         type=str)
 
     options = parser.parse_args()

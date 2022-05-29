@@ -2,7 +2,7 @@ from ..services.main import ChipService
 from ..common.messages_service import MessagesService
 
 
-def remove(path: str = None, result_type: str = "count_files"):
+def remove(path: str = None, result_type: str = "count"):
     service = ChipService()
     messages = MessagesService()
     chipping_result, chipped_failure_files_list, chipped_skipped_files_list = \

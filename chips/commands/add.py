@@ -2,7 +2,7 @@ from ..services.main import ChipService
 from ..common.messages_service import MessagesService
 
 
-def add(path: str = None, auto: str = "on", result_type: str = "list_files"):
+def add(path: str = None, auto: str = "on", result_type: str = "list"):
     service = ChipService()
     messages = MessagesService()
     chipping_result, chipped_failure_files_list, chipped_skipped_files_list = \

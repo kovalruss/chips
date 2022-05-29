@@ -1,6 +1,6 @@
-_EXCLUDES = ['chips', '.chipsignore', 'venv', '.env', '.chipping_results']
+_EXCLUDES = ['chips', '.chipsignore', 'venv', '.env', '.chipping_results', '.local']
 DOCKER_EXCLUDES = ['Dockerfile*', 'docker-*']
-DJANGO_EXCLUDES = ['manage.py']
+DJANGO_EXCLUDES = ['manage.py', 'migrations']
 GIT_EXCLUDES = ['.git*']
 TESTING_EXCLUDES = ['pytest.ini', 'tests', '.tox', '.coverage']
 PYTHON_EXCLUDES = ['*.pyc', '.mypy_cache', '*.py[co]', '*.DS_*', '__init__.py']

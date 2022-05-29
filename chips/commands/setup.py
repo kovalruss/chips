@@ -26,7 +26,7 @@ def setup(venv: str = "on", venv_path: str = ""):
                 venv_config = read_venv.read()
                 read_venv.close()
                 if _CHIPS_EXEC not in venv_config:
-                    with open("/Users/russkovalchuk/PycharmProjects/chip_test_2/venv/bin/activate", "a") as edit_file:
+                    with open(_activate_path, "a") as edit_file:
                         edit_file.write(_CHIPS_EXEC)
                         edit_file.close()
                         messages.default("Added executable variable $chips to virtualenv. \n"
